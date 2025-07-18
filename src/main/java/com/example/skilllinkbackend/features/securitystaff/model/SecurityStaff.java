@@ -16,10 +16,12 @@ import lombok.NoArgsConstructor;
 public class SecurityStaff {
 
     @Id
+    @Column(name = "user_id") // le das un nombre especial a la columna id
     private Long id;
 
     @OneToOne
     @MapsId
+    @JoinColumn(name = "user_id") // esta columna será clave foránea y primaria
     private User user;
 
     @Enumerated(EnumType.STRING)
