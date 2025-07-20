@@ -1,4 +1,4 @@
-## <p align="center"> BASE API SPRING </p>
+## <p align="center"> SHEPARD API </p>
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)<br>
 API Rest desarrollada en Java con Spring Boot para la gestión de usuarios(login y registro), role y CRUD de usuarios.
 
