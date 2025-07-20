@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/room-types")
@@ -47,4 +52,17 @@ public class RoomTypeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping
+    public Map<String, Object> findAll(@PageableDefault(size = 10, sort = "name") Pageable pagination) {
+        Page<RoomTypeResponseDTO> roomTypePage = roomTypeService.findAll(pagination);
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", roomTypePage.getContent());
+        response.put("currentPage", roomTypePage.getNumber());
+        response.put("totalItems", roomTypePage.getTotalElements());
+        response.put("totalPages", roomTypePage.getTotalPages());
+        response.put("pageSize", roomTypePage.getSize());
+        response.put("hasNext", roomTypePage.hasNext());
+        response.put("hasPrevious", roomTypePage.hasPrevious());
+        return response;
+    }
 }
