@@ -1,10 +1,10 @@
 package com.example.skilllinkbackend.config.responses;
 
-public class ApiResponse {
+public class ApiResponseSimple {
     private String message;
     private int status;
 
-    public ApiResponse(String message, int status) {
+    public ApiResponseSimple(String message, int status) {
         this.message = message;
         this.status = status;
     }

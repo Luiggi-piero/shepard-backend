@@ -1,6 +1,6 @@
 package com.example.skilllinkbackend.config.responses;
 
-public class DataResponse<T> extends ApiResponse {
+public class DataResponse<T> extends ApiResponseSimple {
     private T data;
 
     public DataResponse(String message, int status, T data) {
