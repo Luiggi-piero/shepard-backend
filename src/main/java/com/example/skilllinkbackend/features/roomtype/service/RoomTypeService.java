@@ -1,5 +1,6 @@
 package com.example.skilllinkbackend.features.roomtype.service;
 
+import com.example.skilllinkbackend.config.exceptions.NotFoundException;
 import com.example.skilllinkbackend.features.roomtype.dto.RoomTypeRegisterDTO;
 import com.example.skilllinkbackend.features.roomtype.dto.RoomTypeResponseDTO;
 import com.example.skilllinkbackend.features.roomtype.model.RoomType;
@@ -20,5 +21,12 @@ public class RoomTypeService implements IRoomTypeService{
         RoomType roomType = new RoomType(roomTypeDto);
         roomTypeRepository.save(roomType);
         return new RoomTypeResponseDTO(roomType);
+    }
+
+    @Override
+    public void deleteRoomType(Long id) {
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo de habitación no encontrada"));
+        roomType.deactive();
     }
 }

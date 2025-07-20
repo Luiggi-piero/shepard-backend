@@ -10,10 +10,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -21,11 +19,12 @@ import java.net.URI;
 @RestController
 @RequestMapping("/room-types")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
+@PreAuthorize("hasRole('ADMIN')")
 public class RoomTypeController {
 
     private final IRoomTypeService roomTypeService;
 
-    @SecurityRequirement(name = "bearer-key")
     @PostMapping
     @Transactional
     public ResponseEntity<DataResponse<RoomTypeResponseDTO>> createRoomType(
@@ -40,4 +39,12 @@ public class RoomTypeController {
         );
         return ResponseEntity.created(url).body(response);
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> deleteRoomType(@PathVariable Long id) {
+        roomTypeService.deleteRoomType(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
