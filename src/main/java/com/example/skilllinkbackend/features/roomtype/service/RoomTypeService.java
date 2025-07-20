@@ -28,12 +28,19 @@ public class RoomTypeService implements IRoomTypeService {
     @Override
     public void deleteRoomType(Long id) {
         RoomType roomType = roomTypeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Tipo de habitación no encontrada"));
+                .orElseThrow(() -> new NotFoundException("Tipo de habitación no encontrado"));
         roomType.deactive();
     }
 
     @Override
     public Page<RoomTypeResponseDTO> findAll(Pageable pagination) {
         return roomTypeRepository.findAll(pagination).map(RoomTypeResponseDTO::new);
+    }
+
+    @Override
+    public RoomTypeResponseDTO findById(Long id) {
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo de habitación no encontrado"));
+        return new RoomTypeResponseDTO(roomType);
     }
 }

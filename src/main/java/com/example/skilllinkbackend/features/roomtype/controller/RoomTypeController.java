@@ -65,4 +65,9 @@ public class RoomTypeController {
         response.put("hasPrevious", roomTypePage.hasPrevious());
         return response;
     }
+
+    @GetMapping("/{id}")
+    public RoomTypeResponseDTO findById(@PathVariable Long id) {
+        return roomTypeService.findById(id);
+    }
 }

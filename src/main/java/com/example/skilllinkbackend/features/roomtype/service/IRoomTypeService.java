@@ -11,4 +11,6 @@ public interface IRoomTypeService {
     void deleteRoomType(Long id);
 
     Page<RoomTypeResponseDTO> findAll(Pageable pagination);
+
+    RoomTypeResponseDTO findById(Long id);
 }
