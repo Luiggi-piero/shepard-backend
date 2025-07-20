@@ -22,4 +22,8 @@ public class RoomType {
     public RoomType(RoomTypeRegisterDTO roomTypeDto) {
         this.name = roomTypeDto.name();
     }
+
+    public void deactive() {
+        this.enabled = false;
+    }
 }
