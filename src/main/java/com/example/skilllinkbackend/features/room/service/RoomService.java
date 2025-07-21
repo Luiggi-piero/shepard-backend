@@ -29,4 +29,11 @@ public class RoomService implements IRoomService {
         Room roomDb = roomRepository.save(room);
         return new RoomResponseDTO(roomDb);
     }
+
+    @Override
+    public void deleteRoomById(Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Habitación no encontrada"));
+        room.deactive();
+    }
 }

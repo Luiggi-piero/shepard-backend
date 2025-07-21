@@ -21,4 +21,8 @@ public abstract class Accommodation {
     private BigDecimal price;
     private boolean available = true;
     private boolean enabled = true;
+
+    public void deactive() {
+        this.enabled = false;
+    }
 }
