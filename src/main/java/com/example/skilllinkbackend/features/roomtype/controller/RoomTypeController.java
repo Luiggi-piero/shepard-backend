@@ -3,6 +3,7 @@ package com.example.skilllinkbackend.features.roomtype.controller;
 import com.example.skilllinkbackend.config.responses.DataResponse;
 import com.example.skilllinkbackend.features.roomtype.dto.RoomTypeRegisterDTO;
 import com.example.skilllinkbackend.features.roomtype.dto.RoomTypeResponseDTO;
+import com.example.skilllinkbackend.features.roomtype.dto.RoomTypeUpdateDTO;
 import com.example.skilllinkbackend.features.roomtype.service.IRoomTypeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
@@ -69,5 +70,13 @@ public class RoomTypeController {
     @GetMapping("/{id}")
     public RoomTypeResponseDTO findById(@PathVariable Long id) {
         return roomTypeService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public RoomTypeResponseDTO updateRoomType(
+            @PathVariable Long id,
+            @RequestBody @Valid RoomTypeUpdateDTO roomTypeDto) {
+        return roomTypeService.updateRoomType(id, roomTypeDto);
     }
 }
