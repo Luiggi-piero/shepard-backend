@@ -7,6 +7,8 @@ import com.example.skilllinkbackend.features.room.model.Room;
 import com.example.skilllinkbackend.features.room.repository.IRoomRepository;
 import com.example.skilllinkbackend.features.roomtype.model.RoomType;
 import com.example.skilllinkbackend.features.roomtype.repository.IRoomTypeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,5 +37,10 @@ public class RoomService implements IRoomService {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Habitación no encontrada"));
         room.deactive();
+    }
+
+    @Override
+    public Page<RoomResponseDTO> findAll(Pageable pagination) {
+        return roomRepository.findAll(pagination).map(RoomResponseDTO::new);
     }
 }
