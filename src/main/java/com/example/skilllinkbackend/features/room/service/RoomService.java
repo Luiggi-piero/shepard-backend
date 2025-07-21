@@ -1,0 +1,32 @@
+package com.example.skilllinkbackend.features.room.service;
+
+import com.example.skilllinkbackend.config.exceptions.NotFoundException;
+import com.example.skilllinkbackend.features.room.dto.RoomRegisterDTO;
+import com.example.skilllinkbackend.features.room.dto.RoomResponseDTO;
+import com.example.skilllinkbackend.features.room.model.Room;
+import com.example.skilllinkbackend.features.room.repository.IRoomRepository;
+import com.example.skilllinkbackend.features.roomtype.model.RoomType;
+import com.example.skilllinkbackend.features.roomtype.repository.IRoomTypeRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RoomService implements IRoomService {
+
+    private final IRoomRepository roomRepository;
+    private final IRoomTypeRepository roomTypeRepository;
+
+    public RoomService(IRoomRepository roomRepository, IRoomTypeRepository roomTypeRepository) {
+        this.roomRepository = roomRepository;
+        this.roomTypeRepository = roomTypeRepository;
+    }
+
+    @Override
+    public RoomResponseDTO createRoom(RoomRegisterDTO roomRegisterDTO) {
+        Room room = new Room(roomRegisterDTO);
+        RoomType roomType = roomTypeRepository.findById(roomRegisterDTO.roomTypeId())
+                .orElseThrow(() -> new NotFoundException("Tipo de habitación no encontrado"));
+        room.setType(roomType);
+        Room roomDb = roomRepository.save(room);
+        return new RoomResponseDTO(roomDb);
+    }
+}
