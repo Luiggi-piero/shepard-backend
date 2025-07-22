@@ -11,4 +11,6 @@ public interface IRoomService {
     void deleteRoomById(Long id);
 
     Page<RoomResponseDTO> findAll(Pageable pagination);
+
+    RoomResponseDTO findById(Long id);
 }

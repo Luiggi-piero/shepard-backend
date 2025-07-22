@@ -61,4 +61,9 @@ public class RoomController {
         Page<RoomResponseDTO> roomPage = roomService.findAll(pagination);
         return PaginationResponseBuilder.build(roomPage);
     }
+
+    @GetMapping("/{id}")
+    public RoomResponseDTO findById(@PathVariable Long id) {
+        return roomService.findById(id);
+    }
 }
