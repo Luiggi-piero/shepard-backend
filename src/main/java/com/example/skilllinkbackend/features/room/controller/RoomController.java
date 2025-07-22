@@ -6,7 +6,12 @@ import com.example.skilllinkbackend.features.room.dto.RoomResponseDTO;
 import com.example.skilllinkbackend.features.room.dto.RoomUpdateDTO;
 import com.example.skilllinkbackend.features.room.service.IRoomService;
 import com.example.skilllinkbackend.shared.util.PaginationResponseBuilder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -25,6 +30,7 @@ import java.util.Map;
 @RequestMapping("/rooms")
 @SecurityRequirement(name = "bearer-key")
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Habitaciones", description = "Operaciones relacionadas con la gestión de habitaciones")
 public class RoomController {
 
     private final IRoomService roomService;
@@ -33,6 +39,14 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+    @Operation(
+            summary = "Crear una nueva habitación",
+            description = "Solo accesible por usuarios con rol ADMIN",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Habitación creada exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+            }
+    )
     @PostMapping
     @Transactional
     public ResponseEntity<DataResponse<RoomResponseDTO>> createRoom(
@@ -49,6 +63,14 @@ public class RoomController {
         return ResponseEntity.created(url).body(response);
     }
 
+    @Operation(
+            summary = "Eliminar una habitación por ID",
+            description = "Solo accesible por usuarios con rol ADMIN",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Habitación eliminada exitosamente"),
+                    @ApiResponse(responseCode = "404", description = "Habitación no encontrada", content = @Content)
+            }
+    )
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteRoomById(@PathVariable Long id) {
@@ -56,6 +78,19 @@ public class RoomController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            summary = "Listar habitaciones con paginación",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            parameters = {
+                    @Parameter(name = "page", description = "Número de página (0-indexado)", example = "0"),
+                    @Parameter(name = "size", description = "Cantidad de elementos por página", example = "10"),
+                    @Parameter(name = "sort", description = "Campo para ordenar (ej: name,asc)", example = "number,asc")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de habitaciones")
+            }
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     @GetMapping
     public Map<String, Object> findAll(
             @PageableDefault(size = 10, sort = "number") Pageable pagination) {
@@ -63,11 +98,29 @@ public class RoomController {
         return PaginationResponseBuilder.build(roomPage);
     }
 
+    @Operation(
+            summary = "Obtener una habitación por su ID",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Habitación encontrada"),
+                    @ApiResponse(responseCode = "404", description = "Habitación no encontrada", content = @Content)
+            }
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     @GetMapping("/{id}")
     public RoomResponseDTO findById(@PathVariable Long id) {
         return roomService.findById(id);
     }
 
+    @Operation(
+            summary = "Actualizar una habitación existente",
+            description = "Solo accesible por usuarios con rol ADMIN",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Habitación actualizada exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Habitación no encontrada", content = @Content)
+            }
+    )
     @PutMapping("/{id}")
     @Transactional
     public RoomResponseDTO updateRoom(@PathVariable Long id, @RequestBody @Valid RoomUpdateDTO roomUpdateDTO) {
