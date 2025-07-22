@@ -38,7 +38,7 @@ public class RoomTypeController {
     private final IRoomTypeService roomTypeService;
 
     @Operation(
-            summary = "Crear una nueva categoría",
+            summary = "Crear un nuevo tipo de habitación",
             description = "Solo accesible por usuarios con rol ADMIN",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Tipo de habitación creado exitosamente"),
