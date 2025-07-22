@@ -3,6 +3,7 @@ package com.example.skilllinkbackend.features.room.controller;
 import com.example.skilllinkbackend.config.responses.DataResponse;
 import com.example.skilllinkbackend.features.room.dto.RoomRegisterDTO;
 import com.example.skilllinkbackend.features.room.dto.RoomResponseDTO;
+import com.example.skilllinkbackend.features.room.dto.RoomUpdateDTO;
 import com.example.skilllinkbackend.features.room.service.IRoomService;
 import com.example.skilllinkbackend.shared.util.PaginationResponseBuilder;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -65,5 +66,11 @@ public class RoomController {
     @GetMapping("/{id}")
     public RoomResponseDTO findById(@PathVariable Long id) {
         return roomService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public RoomResponseDTO updateRoom(@PathVariable Long id, @RequestBody @Valid RoomUpdateDTO roomUpdateDTO) {
+        return roomService.updateRoom(id, roomUpdateDTO);
     }
 }
