@@ -5,4 +5,6 @@ import com.example.skilllinkbackend.features.department.dto.DepartmentResponseDT
 
 public interface IDepartmentService {
     DepartmentResponseDTO createDepartment(DepartmentRegisterDTO departmentDTO);
+
+    void deleteDepartment(Long id);
 }
