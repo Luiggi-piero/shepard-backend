@@ -43,4 +43,11 @@ public class RoomService implements IRoomService {
     public Page<RoomResponseDTO> findAll(Pageable pagination) {
         return roomRepository.findAll(pagination).map(RoomResponseDTO::new);
     }
+
+    @Override
+    public RoomResponseDTO findById(Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Habitación no encontrada"));
+        return new RoomResponseDTO(room);
+    }
 }
