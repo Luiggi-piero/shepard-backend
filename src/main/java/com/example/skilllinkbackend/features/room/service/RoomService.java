@@ -3,6 +3,7 @@ package com.example.skilllinkbackend.features.room.service;
 import com.example.skilllinkbackend.config.exceptions.NotFoundException;
 import com.example.skilllinkbackend.features.room.dto.RoomRegisterDTO;
 import com.example.skilllinkbackend.features.room.dto.RoomResponseDTO;
+import com.example.skilllinkbackend.features.room.dto.RoomUpdateDTO;
 import com.example.skilllinkbackend.features.room.model.Room;
 import com.example.skilllinkbackend.features.room.repository.IRoomRepository;
 import com.example.skilllinkbackend.features.roomtype.model.RoomType;
@@ -48,6 +49,17 @@ public class RoomService implements IRoomService {
     public RoomResponseDTO findById(Long id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Habitación no encontrada"));
+        return new RoomResponseDTO(room);
+    }
+
+    @Override
+    public RoomResponseDTO updateRoom(Long id, RoomUpdateDTO roomUpdateDTO) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Habitación no encontrada"));
+        RoomType roomType = roomTypeRepository.findById(roomUpdateDTO.roomTypeId())
+                .orElseThrow(() -> new NotFoundException("Tipo de habitación no encontrada"));
+        room.update(roomUpdateDTO);
+        room.setType(roomType);
         return new RoomResponseDTO(room);
     }
 }
