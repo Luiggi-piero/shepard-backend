@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-@Schema(description = "Datos necesarios para crear un departamento")
+@Schema(description = "Datos necesarios para editar un departamento")
 public record DepartmentUpdateDTO(
         @Schema(description = "ID del departamento", example = "1")
         @NotNull(message = "El id del departamento no puede ser nulo")
