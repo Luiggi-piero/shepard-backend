@@ -6,7 +6,12 @@ import com.example.skilllinkbackend.features.department.dto.DepartmentResponseDT
 import com.example.skilllinkbackend.features.department.dto.DepartmentUpdateDTO;
 import com.example.skilllinkbackend.features.department.service.IDepartmentService;
 import com.example.skilllinkbackend.shared.util.PaginationResponseBuilder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -25,6 +30,7 @@ import java.util.Map;
 @RequestMapping("/departments")
 @SecurityRequirement(name = "bearer-key")
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Departamentos", description = "Operaciones relacionadas con la gestión de departamentos")
 public class DepartmentController {
 
     private final IDepartmentService departmentService;
@@ -33,6 +39,14 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
+    @Operation(
+            summary = "Crear un nuevo departamento",
+            description = "Solo accesible por usuarios con rol ADMIN",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Departamento creado exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+            }
+    )
     @PostMapping
     @Transactional
     public ResponseEntity<DataResponse<DepartmentResponseDTO>> createDepartment(
@@ -48,6 +62,14 @@ public class DepartmentController {
         return ResponseEntity.created(url).body(response);
     }
 
+    @Operation(
+            summary = "Eliminar un departamento por ID",
+            description = "Solo accesible por usuarios con rol ADMIN",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Departamento eliminado exitosamente"),
+                    @ApiResponse(responseCode = "404", description = "Departamento no encontrado", content = @Content)
+            }
+    )
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteDepartmentById(@PathVariable Long id) {
@@ -55,6 +77,18 @@ public class DepartmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            summary = "Listar departamentos con paginación",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            parameters = {
+                    @Parameter(name = "page", description = "Número de página (0-indexado)", example = "0"),
+                    @Parameter(name = "size", description = "Cantidad de elementos por página", example = "10"),
+                    @Parameter(name = "sort", description = "Campo para ordenar (ej: code,asc)", example = "code,asc")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de departamentos")
+            }
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     @GetMapping
     public Map<String, Object> findAllDepartment(@PageableDefault(size = 10, sort = "code") Pageable pagination) {
@@ -62,12 +96,29 @@ public class DepartmentController {
         return PaginationResponseBuilder.build(deparmentPage);
     }
 
+    @Operation(
+            summary = "Obtener un departamento por su ID",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Departamento encontrado"),
+                    @ApiResponse(responseCode = "404", description = "Departamento no encontrado", content = @Content)
+            }
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     @GetMapping("/{id}")
     public DepartmentResponseDTO getDepartmentById(@PathVariable Long id) {
         return departmentService.getDepartmentById(id);
     }
 
+    @Operation(
+            summary = "Actualizar un departamento existente",
+            description = "Solo accesible por usuarios con rol ADMIN",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Departamento actualizado exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Departamento no encontrado", content = @Content)
+            }
+    )
     @PutMapping("/{id}")
     @Transactional
     public DepartmentResponseDTO updateDepartment(
