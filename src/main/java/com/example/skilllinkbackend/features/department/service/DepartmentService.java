@@ -5,6 +5,8 @@ import com.example.skilllinkbackend.features.department.dto.DepartmentRegisterDT
 import com.example.skilllinkbackend.features.department.dto.DepartmentResponseDTO;
 import com.example.skilllinkbackend.features.department.model.Department;
 import com.example.skilllinkbackend.features.department.repository.IDepartmentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +29,10 @@ public class DepartmentService implements IDepartmentService {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Departamento no encontrado"));
         department.deactive();
+    }
+
+    @Override
+    public Page<DepartmentResponseDTO> findAllDepartment(Pageable pagination) {
+        return departmentRepository.findAllDepartment(pagination).map(DepartmentResponseDTO::new);
     }
 }
