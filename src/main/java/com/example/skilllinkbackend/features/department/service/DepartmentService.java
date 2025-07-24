@@ -3,6 +3,7 @@ package com.example.skilllinkbackend.features.department.service;
 import com.example.skilllinkbackend.config.exceptions.NotFoundException;
 import com.example.skilllinkbackend.features.department.dto.DepartmentRegisterDTO;
 import com.example.skilllinkbackend.features.department.dto.DepartmentResponseDTO;
+import com.example.skilllinkbackend.features.department.dto.DepartmentUpdateDTO;
 import com.example.skilllinkbackend.features.department.model.Department;
 import com.example.skilllinkbackend.features.department.repository.IDepartmentRepository;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,14 @@ public class DepartmentService implements IDepartmentService {
     public DepartmentResponseDTO getDepartmentById(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Departamento no encontrado"));
+        return new DepartmentResponseDTO(department);
+    }
+
+    @Override
+    public DepartmentResponseDTO updateDepartment(Long id, DepartmentUpdateDTO departmentDTO) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Departamento no encontrado"));
+        department.update(departmentDTO);
         return new DepartmentResponseDTO(department);
     }
 }
