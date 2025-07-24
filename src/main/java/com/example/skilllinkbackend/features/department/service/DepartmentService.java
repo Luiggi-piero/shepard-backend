@@ -35,4 +35,11 @@ public class DepartmentService implements IDepartmentService {
     public Page<DepartmentResponseDTO> findAllDepartment(Pageable pagination) {
         return departmentRepository.findAllDepartment(pagination).map(DepartmentResponseDTO::new);
     }
+
+    @Override
+    public DepartmentResponseDTO getDepartmentById(Long id) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Departamento no encontrado"));
+        return new DepartmentResponseDTO(department);
+    }
 }

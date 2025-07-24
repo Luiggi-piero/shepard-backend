@@ -11,4 +11,6 @@ public interface IDepartmentService {
     void deleteDepartment(Long id);
 
     Page<DepartmentResponseDTO> findAllDepartment(Pageable pagination);
+
+    DepartmentResponseDTO getDepartmentById(Long id);
 }
