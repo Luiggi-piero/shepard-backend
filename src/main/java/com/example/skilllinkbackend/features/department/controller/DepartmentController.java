@@ -3,6 +3,7 @@ package com.example.skilllinkbackend.features.department.controller;
 import com.example.skilllinkbackend.config.responses.DataResponse;
 import com.example.skilllinkbackend.features.department.dto.DepartmentRegisterDTO;
 import com.example.skilllinkbackend.features.department.dto.DepartmentResponseDTO;
+import com.example.skilllinkbackend.features.department.dto.DepartmentUpdateDTO;
 import com.example.skilllinkbackend.features.department.service.IDepartmentService;
 import com.example.skilllinkbackend.shared.util.PaginationResponseBuilder;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -54,14 +55,24 @@ public class DepartmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     @GetMapping
     public Map<String, Object> findAllDepartment(@PageableDefault(size = 10, sort = "code") Pageable pagination) {
         Page<DepartmentResponseDTO> deparmentPage = departmentService.findAllDepartment(pagination);
         return PaginationResponseBuilder.build(deparmentPage);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     @GetMapping("/{id}")
     public DepartmentResponseDTO getDepartmentById(@PathVariable Long id) {
         return departmentService.getDepartmentById(id);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public DepartmentResponseDTO updateDepartment(
+            @PathVariable Long id,
+            @RequestBody @Valid DepartmentUpdateDTO departmentDto) {
+        return departmentService.updateDepartment(id, departmentDto);
     }
 }
