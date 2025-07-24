@@ -59,4 +59,9 @@ public class DepartmentController {
         Page<DepartmentResponseDTO> deparmentPage = departmentService.findAllDepartment(pagination);
         return PaginationResponseBuilder.build(deparmentPage);
     }
+
+    @GetMapping("/{id}")
+    public DepartmentResponseDTO getDepartmentById(@PathVariable Long id) {
+        return departmentService.getDepartmentById(id);
+    }
 }
