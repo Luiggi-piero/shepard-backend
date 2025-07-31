@@ -1,5 +1,6 @@
 package com.example.skilllinkbackend.config.exceptions;
 
+import com.example.skilllinkbackend.features.booking.validations.dto.TimeValidationResultResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,6 +40,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBadRequestException(BadRequestException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<Object> handleInvalidRoleException(InvalidRoleException ex, WebRequest request) {
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(ReservationTimeConflict.class)
+    public ResponseEntity<Object> handleReservationTimeConflict(ReservationTimeConflict ex, WebRequest request) {
+        return buildResponseEntity(HttpStatus.BAD_REQUEST,
+                new TimeValidationResultResponseDTO(ex.getMessage(),
+                        ex.timeValidationResult.conflictedAccommodationIds()),
+                        request);
     }
 
 
