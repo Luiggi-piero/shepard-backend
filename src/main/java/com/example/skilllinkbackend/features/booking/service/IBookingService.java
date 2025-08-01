@@ -5,4 +5,6 @@ import com.example.skilllinkbackend.features.booking.dto.BookingResponseDTO;
 
 public interface IBookingService {
     BookingResponseDTO createBooking(BookingRegisterDTO bookingRegisterDTO);
+
+    void deleteBooking(Long id);
 }

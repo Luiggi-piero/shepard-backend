@@ -61,4 +61,11 @@ public class BookingService implements IBookingService{
         Booking bookingDb = bookingRepository.save(booking);
         return new BookingResponseDTO(bookingDb);
     }
+
+    @Override
+    public void deleteBooking(Long id) {
+        Booking booking = bookingRepository.findByIdAndEnabledTrue(id)
+                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+        booking.deactive();
+    }
 }

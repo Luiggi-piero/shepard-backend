@@ -54,4 +54,8 @@ public class Booking {
     private List<BookingItem> bookingItems = new ArrayList<>();
 
     private boolean enabled = true;
+
+    public void deactive() {
+        this.enabled = false;
+    }
 }
