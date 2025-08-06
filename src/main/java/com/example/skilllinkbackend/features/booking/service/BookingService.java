@@ -16,14 +16,19 @@ import com.example.skilllinkbackend.features.receptionist.repository.IReceptioni
 import com.example.skilllinkbackend.features.usuario.model.User;
 import com.example.skilllinkbackend.features.usuario.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class BookingService implements IBookingService{
+@Slf4j
+public class BookingService implements IBookingService {
 
     private final IBookingRepository bookingRepository;
     private final IUserRepository userRepository;
@@ -46,7 +51,7 @@ public class BookingService implements IBookingService{
         booking.setStatus(ReservationStatus.RESERVED); // Estado por defecto
 
         List<BookingItem> items = new ArrayList<>();
-        for (BookingItemRegisterDTO itemDTO: bookingRegisterDTO.bookingItems()){
+        for (BookingItemRegisterDTO itemDTO : bookingRegisterDTO.bookingItems()) {
             Accommodation accommodation = accommodationRepository.findById(itemDTO.accommodationId())
                     .orElseThrow(() -> new NotFoundException("El alojamiento con id " + itemDTO.accommodationId() + " no fue encontrado"));
 
@@ -67,5 +72,33 @@ public class BookingService implements IBookingService{
         Booking booking = bookingRepository.findByIdAndEnabledTrue(id)
                 .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         booking.deactive();
+    }
+
+    @Override
+    public Page<BookingResponseDTO> findAllBooking(
+            Pageable pageable,
+            ReservationStatus status,
+            Long guestId,
+            Long receptionistId,
+            OffsetDateTime checkIn,
+            OffsetDateTime checkOut,
+            String guestFirstName
+    ) {
+        /*log.info("Valor de checkIn {}", checkIn);
+        OffsetDateTime checkInDefault = OffsetDateTime.parse("2000-07-28T15:00:00Z");
+        OffsetDateTime checkInSearch = checkIn != null ? checkIn.withOffsetSameInstant(ZoneOffset.UTC) : checkInDefault;
+        log.info("checkInSearch: {}", checkInSearch);
+        log.info("Tipo de dato de checkInSearch: {}", checkInSearch.getClass().getName());*/
+
+
+        return bookingRepository.findAllBookingWithFilters(
+                pageable,
+                status,
+                guestId,
+                receptionistId,
+                checkIn,
+                checkOut,
+                guestFirstName
+        ).map(BookingResponseDTO::new);
     }
 }
