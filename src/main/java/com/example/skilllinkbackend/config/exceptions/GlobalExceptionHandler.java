@@ -1,6 +1,7 @@
 package com.example.skilllinkbackend.config.exceptions;
 
 import com.example.skilllinkbackend.features.booking.validations.dto.TimeValidationResultResponseDTO;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -58,9 +59,23 @@ public class GlobalExceptionHandler {
                 request);
     }
 
-    // Manejo de la excepcion del formato de fechas para el @RequestBody
+    // Manejo de la excepcion del formato de fechas y enums para el @RequestBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+        Throwable cause = ex.getCause();
+
+        if (cause instanceof InvalidFormatException invalidFormatException) {
+            // Verifica si el error es por un Enum
+            Class<?> targetType = invalidFormatException.getTargetType();
+            if (targetType.isEnum()) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("message", "Valor inválido para el campo tipo enum: " + targetType.getSimpleName());
+                error.put("valueReceived", invalidFormatException.getValue());
+                error.put("acceptedValues", targetType.getEnumConstants());
+                return buildResponseEntity(HttpStatus.BAD_REQUEST, error, request);
+            }
+        }
+
         String message = "Error de formato en los datos enviados. Verifica que las fechas estén en formato ISO 8601, por ejemplo: '2025-08-10T14:00:00-05:00' o '2025-09-01T14:00:00Z'.";
         return buildResponseEntity(HttpStatus.BAD_REQUEST, message, request);
     }
@@ -80,7 +95,6 @@ public class GlobalExceptionHandler {
             error.put("detail", "Se esperaba: " + ex.getRequiredType().getSimpleName());
         }
 
-//        return ResponseEntity.badRequest().body(error);
         return buildResponseEntity(HttpStatus.BAD_REQUEST, error, request);
     }
 
