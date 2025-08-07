@@ -7,7 +7,12 @@ import com.example.skilllinkbackend.features.booking.dto.BookingUpdateDTO;
 import com.example.skilllinkbackend.features.booking.model.ReservationStatus;
 import com.example.skilllinkbackend.features.booking.service.IBookingService;
 import com.example.skilllinkbackend.shared.util.PaginationResponseBuilder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +36,19 @@ import java.util.Map;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-key")
 @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
+@Tag(name = "Reservas", description = "Operaciones relacionadas con la gestión de reservas")
 public class BookingController {
 
     private final IBookingService bookingService;
 
+    @Operation(
+            summary = "Crear una nueva reserva",
+            description = "Solo accesible por usuarios con rol ADMIN y RECEPTION",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Reserva creada exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+            }
+    )
     @PostMapping
     @Transactional
     public ResponseEntity<DataResponse<BookingResponseDTO>> createBooking(
@@ -51,6 +65,14 @@ public class BookingController {
         return ResponseEntity.created(url).body(response);
     }
 
+    @Operation(
+            summary = "Eliminar una reserva por ID",
+            description = "Solo accesible por usuarios con rol ADMIN y RECEPTION",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Reserva eliminada exitosamente"),
+                    @ApiResponse(responseCode = "404", description = "Reserva no encontrada", content = @Content)
+            }
+    )
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
@@ -58,6 +80,18 @@ public class BookingController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            summary = "Listar reservas con paginación",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            parameters = {
+                    @Parameter(name = "page", description = "Número de página (0-indexado)", example = "0"),
+                    @Parameter(name = "size", description = "Cantidad de elementos por página", example = "10"),
+                    @Parameter(name = "sort", description = "Campo para ordenar (ej: createdAt,asc)", example = "createdAt,desc")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de reservas")
+            }
+    )
     @GetMapping
     public Map<String, Object> findAllBooking(
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
@@ -80,11 +114,28 @@ public class BookingController {
         return PaginationResponseBuilder.build(bookingPage);
     }
 
+    @Operation(
+            summary = "Obtener una reserva por su ID",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Reserva encontrada"),
+                    @ApiResponse(responseCode = "404", description = "Reserva no encontrada", content = @Content)
+            }
+    )
     @GetMapping("/{id}")
     public BookingResponseDTO findById(@PathVariable Long id) {
         return bookingService.findById(id);
     }
 
+    @Operation(
+            summary = "Actualizar una reserva existente",
+            description = "Solo accesible por usuarios con rol ADMIN o RECEPTION",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Reserva actualizada exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Reserva no encontrada", content = @Content)
+            }
+    )
     @PutMapping("/{id}")
     @Transactional
     public BookingResponseDTO updateBooking(
