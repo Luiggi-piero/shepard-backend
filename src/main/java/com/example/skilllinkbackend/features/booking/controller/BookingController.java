@@ -3,6 +3,7 @@ package com.example.skilllinkbackend.features.booking.controller;
 import com.example.skilllinkbackend.config.responses.DataResponse;
 import com.example.skilllinkbackend.features.booking.dto.BookingRegisterDTO;
 import com.example.skilllinkbackend.features.booking.dto.BookingResponseDTO;
+import com.example.skilllinkbackend.features.booking.dto.BookingUpdateDTO;
 import com.example.skilllinkbackend.features.booking.model.ReservationStatus;
 import com.example.skilllinkbackend.features.booking.service.IBookingService;
 import com.example.skilllinkbackend.shared.util.PaginationResponseBuilder;
@@ -82,5 +83,14 @@ public class BookingController {
     @GetMapping("/{id}")
     public BookingResponseDTO findById(@PathVariable Long id) {
         return bookingService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public BookingResponseDTO updateBooking(
+            @PathVariable Long id,
+            @RequestBody @Valid BookingUpdateDTO bookingUpdateDTO
+    ) {
+        return bookingService.updateBooking(id, bookingUpdateDTO);
     }
 }

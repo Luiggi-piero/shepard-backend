@@ -2,6 +2,7 @@ package com.example.skilllinkbackend.features.booking.service;
 
 import com.example.skilllinkbackend.features.booking.dto.BookingRegisterDTO;
 import com.example.skilllinkbackend.features.booking.dto.BookingResponseDTO;
+import com.example.skilllinkbackend.features.booking.dto.BookingUpdateDTO;
 import com.example.skilllinkbackend.features.booking.model.ReservationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,6 @@ public interface IBookingService {
     );
 
     BookingResponseDTO findById(Long id);
+
+    BookingResponseDTO updateBooking(Long id, BookingUpdateDTO bookingUpdateDTO);
 }

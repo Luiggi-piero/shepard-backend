@@ -58,4 +58,19 @@ public class Booking {
     public void deactive() {
         this.enabled = false;
     }
+
+    public void update(
+            Long id,
+            User guest,
+            Receptionist receptionist,
+            OffsetDateTime checkIn,
+            OffsetDateTime checkOut,
+            ReservationStatus status) {
+        this.setId(id);
+        this.setGuest(guest);
+        this.setReceptionist(receptionist);
+        this.setCheckIn(checkIn);
+        this.setCheckOut(checkOut);
+        this.setStatus(status);
+    }
 }
