@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 public interface IBookingService {
     BookingResponseDTO createBooking(BookingRegisterDTO bookingRegisterDTO);
@@ -24,9 +23,5 @@ public interface IBookingService {
             String guestFirstName
     );
 
-    /*,
-            ,
-            ,
-           ,
-            */
+    BookingResponseDTO findById(Long id);
 }

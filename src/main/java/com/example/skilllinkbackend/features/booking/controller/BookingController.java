@@ -79,4 +79,8 @@ public class BookingController {
         return PaginationResponseBuilder.build(bookingPage);
     }
 
+    @GetMapping("/{id}")
+    public BookingResponseDTO findById(@PathVariable Long id) {
+        return bookingService.findById(id);
+    }
 }

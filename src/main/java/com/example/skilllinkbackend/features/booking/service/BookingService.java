@@ -101,4 +101,11 @@ public class BookingService implements IBookingService {
                 guestFirstName
         ).map(BookingResponseDTO::new);
     }
+
+    @Override
+    public BookingResponseDTO findById(Long id) {
+        Booking booking = bookingRepository.findByIdAndEnabledTrue(id)
+                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+        return new BookingResponseDTO(booking);
+    }
 }
