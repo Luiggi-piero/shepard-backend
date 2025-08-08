@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/room-types")
+@RequestMapping("/api/v1/room-types")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
 @PreAuthorize("hasRole('ADMIN')")
