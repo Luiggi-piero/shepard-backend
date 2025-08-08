@@ -195,7 +195,7 @@ Arquitectura basada en paquetes funcionales, se organizan  las carpetas de acuer
         
 
 ## Modelo Entidad Relación
-<img width="751" height="361" alt="Image" src="https://github.com/user-attachments/assets/5f71b75a-7b1e-4157-afbe-348186eaad4b" />
+<img width="2091" height="676" alt="Image" src="https://github.com/user-attachments/assets/662c86aa-7744-4b40-833a-842643040558" />
 
 </br>
 
@@ -204,10 +204,9 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE
 </br></br>
 
 > [!IMPORTANT]
-> * Con sql crea los roles: ADMIN, USER, MENTEE y MENTOR en la tabla roles
+> * Con sql crea los roles: USER, ADMIN, GUEST, CLEANING, RECEPTION y SECURITY  en la tabla roles
 > * Cambia a enabled 1 todos los roles
-> * Registra un usuario
-> * Modifica la tabla users_roles: agrega un registro para asignar al usuario creado el rol ADMIN
+> * Registra un usuario con los roles necesarios
 > * Agrega la configuración de la bd en `application-prod.yml`
 > * Para aquellos que no tienen la zona horaria GMT-5 modificar el archivo ...TokenService (para indicar la expiración del token)
          
