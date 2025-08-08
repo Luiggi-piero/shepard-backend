@@ -19,7 +19,7 @@ public class SpringDocConfiguration {
                                 new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
                 .info(new Info()
                         .title("Shepard API")
-                        .description("API Rest de la aplicación Shepard que contiene las funcionalidades CRUD de mentores, categorías, proyectos, desafíos, evaluaciones, además gestiona la autenticación de usuarios")
+                        .description("API Rest de la aplicación Shepard que contiene las funcionalidades CRUD de tipos de habitaciones, habitaciones, departamentos, reservas, además gestiona la autenticación de usuarios")
                         .contact(new Contact()
                                 .name("Equipo Backend")
                                 .email("luiggiyantas@gmail.com")
