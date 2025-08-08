@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/v1/login")
 @Tag(name = "Autenticación", description = "Inicio de sesión de usuarios y generación de token JWT")
 public class AuthenticationController {
 

@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios del sistema")
 public class UserController {
 

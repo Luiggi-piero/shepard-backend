@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/api/v1/rooms")
 @SecurityRequirement(name = "bearer-key")
 @PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Habitaciones", description = "Operaciones relacionadas con la gestión de habitaciones")
