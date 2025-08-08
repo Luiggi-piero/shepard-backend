@@ -1,6 +1,6 @@
 ## <p align="center"> SHEPARD API </p>
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)<br>
-API Rest desarrollada en Java con Spring Boot para la gestión de usuarios(login y registro), role y CRUD de usuarios.
+API Rest que ofrece servicios de reservación de habitaciones y departamentos desarrollada en Java con Spring Boot, Spring Security, Spring Doc, PostgreSQL, entre otros para la gestión de usuarios(login y registro).
 
 
 ## Índice
@@ -149,7 +149,7 @@ Swagger está configurado para generar documentación de la API automáticamente
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
-![image](https://github.com/user-attachments/assets/9d909024-f60d-442a-a63a-d02528599d6c)
+<img width="1897" height="904" alt="image" src="https://github.com/user-attachments/assets/e49827bd-6ca4-4c58-a1af-01fcf49f4974" />
 
 
 
@@ -174,10 +174,19 @@ Arquitectura basada en paquetes funcionales, se organizan  las carpetas de acuer
           |   |   └── springdoc        -> Spring doc configuration.
           │   ├── features
           │   |   ├── auth             -> Authentication.
-          |   |   ├── mentor 
+          |   |   ├── accommodation
+          |   |   ├── booking
+          |   |   ├── bookingitem
+          |   |   ├── cleaningstaff
+          |   |   ├── department
+          |   |   ├── receptionist
+          |   |   ├── room
+          |   |   ├── roomtype
+          |   |   ├── securitystaff
           |   |   ├── role   
           |   |   └── usuario 
           |   └── shared                     
+          │      ├── enums
           │      ├── roledeletionhandler
           |      ├── roleregistrationhandler        
           |      └── util             -> Reusable items.
