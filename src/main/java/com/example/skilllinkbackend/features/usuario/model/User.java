@@ -30,6 +30,7 @@ public class User implements UserDetails {
     private String password;
     private String biography;
     private String photo;
+    private String dni;
     private boolean enabled = true;
 
     // Guarda la fecha de creación en UTC
@@ -62,6 +63,7 @@ public class User implements UserDetails {
         setPassword(userDto.password().toCharArray());
         this.biography = userDto.biography();
         this.photo = userDto.photo();
+        this.dni = userDto.dni();
     }
 
     public void setPassword(char[] plainPassword) {
@@ -187,5 +189,14 @@ public class User implements UserDetails {
         this.biography = userDto.biography();
         this.photo = userDto.photo();
         this.roles = roles;
+        this.dni = userDto.dni();
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 }
