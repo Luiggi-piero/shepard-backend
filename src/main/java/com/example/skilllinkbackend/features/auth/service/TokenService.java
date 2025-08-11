@@ -47,7 +47,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             verifier = JWT.require(algorithm)
-                    .withIssuer("Skill Link")
+                    .withIssuer("Shepard")
                     .build()
                     .verify(token);
             verifier.getSubject();

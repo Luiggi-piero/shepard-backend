@@ -13,6 +13,7 @@ public record UserResponseDTO(
         String email,
         String biography,
         String photo,
+        String dni,
         boolean enabled,
         Set<Role> roles
 ) {
@@ -25,6 +26,7 @@ public record UserResponseDTO(
                 user.getUsername(),
                 user.getBiography(),
                 user.getPhoto(),
+                user.getDni(),
                 user.isEnabled(),
                 user.getRoles()
         );

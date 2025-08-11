@@ -46,6 +46,10 @@ public record UserRegisterRequestDTO(
         @Size(min = 2, max = 350)
         String photo,
 
+        @Schema(description = "DNI del usuario", example = "78945200")
+        @NotBlank
+        String dni,
+
         @NotEmpty
         Set<RolesEnum> roles,
 
@@ -63,6 +67,7 @@ public record UserRegisterRequestDTO(
                 userDto.password(),
                 userDto.biography(),
                 userDto.photo(),
+                userDto.dni(),
                 userDto.roles(),
                 userDto.cleaningStaff(),
                 userDto.receptionist(),

@@ -51,6 +51,10 @@ public record UserUpdateDTO(
         @Size(min = 2, max = 350)
         String photo,
 
+        @Schema(description = "DNI del usuario", example = "78945200")
+        @NotBlank
+        String dni,
+
         @NotEmpty
         Set<RolesEnum> roles,
 
