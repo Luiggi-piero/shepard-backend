@@ -196,7 +196,7 @@ Arquitectura basada en paquetes funcionales, se organizan  las carpetas de acuer
         
 
 ## Modelo Entidad Relación
-<img width="2091" height="676" alt="Image" src="https://github.com/user-attachments/assets/662c86aa-7744-4b40-833a-842643040558" />
+<img width="2091" height="676" alt="Image" src="https://github.com/user-attachments/assets/0b5af799-1e94-4fb4-af8c-464392e7c7d7" />
 
 </br>
 
