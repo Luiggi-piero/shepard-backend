@@ -51,4 +51,11 @@ public interface IUserRepository extends JpaRepository<User, Long> {
             WHERE u.enabled = true
             """)
     Page<User> findAll(Pageable pagination);
+
+    @Query("""
+            SELECT u
+            FROM User u
+            WHERE u.email = :email
+            """)
+    Optional<User> findByEmailVerification(String email);
 }

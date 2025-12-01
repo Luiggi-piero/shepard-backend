@@ -2,10 +2,7 @@ package com.example.skilllinkbackend.features.usuario.controller;
 
 //import com.example.skilllinkbackend.config.responses.ApiResponse;
 import com.example.skilllinkbackend.config.responses.DataResponse;
-import com.example.skilllinkbackend.features.usuario.dto.RegisteredUserResponseDTO;
-import com.example.skilllinkbackend.features.usuario.dto.UserRegisterRequestDTO;
-import com.example.skilllinkbackend.features.usuario.dto.UserResponseDTO;
-import com.example.skilllinkbackend.features.usuario.dto.UserUpdateDTO;
+import com.example.skilllinkbackend.features.usuario.dto.*;
 import com.example.skilllinkbackend.features.usuario.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,8 +10,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -78,14 +77,28 @@ public class UserController {
     )
     @PostMapping("register")
     public ResponseEntity<DataResponse<RegisteredUserResponseDTO>> createUser(
-            @RequestBody @Valid UserRegisterRequestDTO userDto) {
+            @RequestBody @Valid UserRegisterRequestDTO userDto) throws MessagingException {
         RegisteredUserResponseDTO registeredUserResponseDTO =  userService.createUser(userDto);
         //ApiResponse response = new ApiResponse("Usuario registrado existosamente", HttpStatus.CREATED.value());
         DataResponse<RegisteredUserResponseDTO> response = new DataResponse(
-                "Usuario registrado existosamente",
+                "Usuario registrado, por favor verifique su registro, revise su correo",
                 HttpStatus.CREATED.value(),
                 registeredUserResponseDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "Verificar registro",
+            description = "Verifica tu registro usando el código enviado por correo",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuario verificado exitosamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos o error en validación", content = @Content)
+            }
+    )
+    @PostMapping("register/verify-user")
+    public ResponseEntity<String> verifyUserRegister(@RequestBody VerifyUserRequestDTO verifyUserRequestDTO){
+        userService.verifyUser(verifyUserRequestDTO);
+        return ResponseEntity.ok("Cuenta verificada con éxito");
     }
 
     @Operation(

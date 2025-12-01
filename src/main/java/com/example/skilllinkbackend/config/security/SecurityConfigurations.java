@@ -36,7 +36,7 @@ public class SecurityConfigurations {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/",
                                 "/swagger-ui/**",

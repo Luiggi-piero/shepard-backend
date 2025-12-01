@@ -4,6 +4,8 @@ import com.example.skilllinkbackend.features.role.model.Role;
 import com.example.skilllinkbackend.features.usuario.dto.UserRegisterRequestDTO;
 import com.example.skilllinkbackend.features.usuario.dto.UserUpdateDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +33,16 @@ public class User implements UserDetails {
     private String biography;
     private String photo;
     private String dni;
-    private boolean enabled = true;
+
+    @Getter @Setter
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Getter @Setter
+    @Column(name = "verification_expiration")
+    private LocalDateTime verificationCodeExpiresAt;
+
+    private boolean enabled = false;
 
     // Guarda la fecha de creación en UTC
     @CreationTimestamp
@@ -112,6 +123,7 @@ public class User implements UserDetails {
         this.photo = photo;
     }
 
+    // Tiene que estar si o si
     @Override
     public String getUsername() {
         return email;
@@ -137,10 +149,6 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> authorities = roles.stream()
@@ -157,6 +165,11 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+    // FIN Tiene que estar si o si
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Long getUserId() {
