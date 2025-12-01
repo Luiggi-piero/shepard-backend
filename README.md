@@ -210,6 +210,7 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE
 > * Registra un usuario con los roles necesarios
 > * Agrega la configuración de la bd en `application-prod.yml`
 > * Para aquellos que no tienen la zona horaria GMT-5 modificar el archivo ...TokenService (para indicar la expiración del token)
+> * Crea el archivo .env(como .env.example) con los datos de SPRING_MAIL_USERNAME y SPRING_MAIL_PASSWORD para el envío de correos, las demás variables también pueden estar aqui(DB_USER, DB_PASS y JWT_SECRET) o las puedes agregar en Environment variables de IntelliJ IDEA
          
 
 </br>
