@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,7 +64,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public RegisteredUserResponseDTO createUser(UserRegisterRequestDTO userDto) throws MessagingException{
+    public RegisteredUserResponseDTO createUser(UserRegisterRequestDTO userDto) throws MessagingException {
         validateUserUniqueness(userDto);
         passwordValidationService.validatePassword(new String(userDto.password()));
         User user = new User(userDto);
@@ -85,10 +84,10 @@ public class UserService implements IUserService {
         // Si el rol es MENTOR -> crea un mentor, usa MentorRegistrationHandler
         // Si el rol es MENTEE -> crea un mentee, usa MenteeRegistrationHandler
         /*
-        * Para cada rol que tiene el usuario, busca si hay una clase que sepa manejar ese rol (un handler),
-        * y si la hay, ejecuta su lógica con el usuario y el DTO.
-        * */
-        for (RolesEnum role : userDto.roles()){
+         * Para cada rol que tiene el usuario, busca si hay una clase que sepa manejar ese rol (un handler),
+         * y si la hay, ejecuta su lógica con el usuario y el DTO.
+         * */
+        for (RolesEnum role : userDto.roles()) {
             roleHandlers.stream()
                     .filter(handler -> handler.supports() == role)
                     .findFirst()
@@ -122,7 +121,7 @@ public class UserService implements IUserService {
         deleteRolesForUser(id, Set.of(RolesEnum.CLEANING, RolesEnum.RECEPTION, RolesEnum.SECURITY));
 
         // Registrar el usuario en las tablas de roles asignados(receptionists, security_staff...)
-        for (RolesEnum role : userDto.roles()){
+        for (RolesEnum role : userDto.roles()) {
             roleHandlers.stream()
                     .filter(handler -> handler.supports() == role)
                     .findFirst()
@@ -137,13 +136,13 @@ public class UserService implements IUserService {
         User user = userRepository.findByEmailVerification(input.email())
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
-        if (user.isEnabled()){
+        if (user.isEnabled()) {
             throw new BadRequestException("La cuenta ya se encuentra verificada " + user.getUsername());
         }
         if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
             throw new BadRequestException(("El código de verificación ya expiró"));
         }
-        if (!user.getVerificationCode().equals(input.verificationCode())){
+        if (!user.getVerificationCode().equals(input.verificationCode())) {
             throw new BadRequestException("El código de verificación es inválido");
         }
         // Todo bien
@@ -154,13 +153,30 @@ public class UserService implements IUserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    @Override
+    public void resendVerificationCode(String email) throws MessagingException {
+        User user = userRepository.findByEmailVerification(email)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+        if (user.isEnabled()) {
+            throw new BadRequestException("La cuenta ya se encuentra verificada");
+        }
+
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
+        sendVerificationByEmail(user);
+        userRepository.save(user);
+    }
+
     /**
      * Elimina el registro(por userId) de las tablas de roles(mentors, mentee...) si existe
+     *
      * @param userId
      * @param rolesToDelete
      */
     private void deleteRolesForUser(Long userId, Set<RolesEnum> rolesToDelete) {
-        for (RolesEnum role: rolesToDelete){
+        for (RolesEnum role : rolesToDelete) {
             deletionHandlers.stream()
                     .filter(handler -> handler.supports() == role)
                     .findFirst()

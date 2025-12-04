@@ -18,5 +18,8 @@ public interface IUserService {
 
     // verifica si el codigo de verificacion es el correcto
     void verifyUser(VerifyUserRequestDTO input);
+
+    // reenviar codigo de verificacion
+    void resendVerificationCode(String email) throws MessagingException;
 }
 
