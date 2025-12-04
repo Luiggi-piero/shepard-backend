@@ -1,6 +1,6 @@
 package com.example.skilllinkbackend.features.usuario.controller;
 
-//import com.example.skilllinkbackend.config.responses.ApiResponse;
+import com.example.skilllinkbackend.config.responses.ApiResponseSimple;
 import com.example.skilllinkbackend.config.responses.DataResponse;
 import com.example.skilllinkbackend.features.usuario.dto.*;
 import com.example.skilllinkbackend.features.usuario.service.UserService;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -99,6 +98,20 @@ public class UserController {
     public ResponseEntity<String> verifyUserRegister(@RequestBody VerifyUserRequestDTO verifyUserRequestDTO){
         userService.verifyUser(verifyUserRequestDTO);
         return ResponseEntity.ok("Cuenta verificada con éxito");
+    }
+
+    @Operation(
+            summary = "Reenviar el código de verificación",
+            description = "Reenvía el código de verificación a un correo",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Código enviado"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+            }
+    )
+    @PostMapping("resend")
+    public ResponseEntity<ApiResponseSimple> resendVerificationCode(@RequestParam String email) throws MessagingException {
+        userService.resendVerificationCode(email);
+        return ResponseEntity.ok(new ApiResponseSimple("Código de verificación reenviado", HttpStatus.OK.value()));
     }
 
     @Operation(
