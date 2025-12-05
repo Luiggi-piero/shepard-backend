@@ -14,6 +14,7 @@ import com.example.skilllinkbackend.features.usuario.repository.IUserRepository;
 import com.example.skilllinkbackend.shared.roledeletionhandler.RoleDeletionHandler;
 import com.example.skilllinkbackend.shared.rolegistrationhandler.RoleRegistrationHandler;
 import com.example.skilllinkbackend.shared.service.EmailService;
+import com.example.skilllinkbackend.shared.util.EmailUtil;
 import com.example.skilllinkbackend.shared.util.RoleUtil;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -72,7 +73,7 @@ public class UserService implements IUserService {
         assignDefaultRole(user);
 
         user.setVerificationCode(generateVerificationCode());
-        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
+        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
         user.setEnabled(false); //para activacion por mail.
 
         sendVerificationByEmail(user);
@@ -212,19 +213,9 @@ public class UserService implements IUserService {
     }
 
     private void sendVerificationByEmail(User user) throws MessagingException {
-        String subject = "Verificacion de cuenta";
-        String htmlMessage = "<html>"
-                + "<body style=\"font-family: Arial, sans-serif;\">"
-                + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
-                + "<h2 style=\"color: #333;\">Bienvenido a tu app!</h2>"
-                + "<p style=\"font-size: 16px;\">Ingrese el código de verificación a continuación para continuar:</p>"
-                + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
-                + "<h3 style=\"color: #333;\">Codigo de verificacion:</h3>"
-                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + user.getVerificationCode() + "</p>"
-                + "</div>"
-                + "</div>"
-                + "</body>"
-                + "</html>";
+        String subject = "Verificación de cuenta";
+
+        String htmlMessage = EmailUtil.htmlMessageVerification(user.getVerificationCode());
 
         emailService.sendNotification(user.getUsername(), subject, htmlMessage);
     }

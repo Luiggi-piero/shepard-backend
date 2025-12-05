@@ -7,6 +7,7 @@ import com.example.skilllinkbackend.features.auth.validation.password.IPasswordV
 import com.example.skilllinkbackend.features.usuario.model.User;
 import com.example.skilllinkbackend.features.usuario.repository.IUserRepository;
 import com.example.skilllinkbackend.shared.service.EmailService;
+import com.example.skilllinkbackend.shared.util.EmailUtil;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,9 @@ public class PasswordService implements IPasswordService {
         // - Envia un correo con una ruta del front que contiene el token
         // - El token servira para identificar a que registro cambiar la contrasenia
         String resetLink = resetPasswordBaseUrl + "?token=" + token;
+        String htmlMessage = EmailUtil.htmlMessageRenewPassword(resetLink);
 
-        emailService.sendNotification(user.getUsername(), "Renovar contraseña", resetLink);
+        emailService.sendNotification(user.getUsername(), "Renovar contraseña", htmlMessage);
     }
 
     // (2)
