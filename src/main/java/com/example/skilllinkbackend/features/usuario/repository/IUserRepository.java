@@ -58,4 +58,12 @@ public interface IUserRepository extends JpaRepository<User, Long> {
             WHERE u.email = :email
             """)
     Optional<User> findByEmailVerification(String email);
+
+    @Query("""
+            SELECT u
+            FROM User u
+            WHERE u.verificationCode = :verificationCode
+            AND u.enabled = true
+            """)
+    Optional<User> findByVerificationCode(String verificationCode);
 }
