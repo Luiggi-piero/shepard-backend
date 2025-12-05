@@ -43,6 +43,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/register/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/resend").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/request-password-renewal").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/renew-password").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs",

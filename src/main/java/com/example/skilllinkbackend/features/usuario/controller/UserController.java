@@ -2,6 +2,8 @@ package com.example.skilllinkbackend.features.usuario.controller;
 
 import com.example.skilllinkbackend.config.responses.ApiResponseSimple;
 import com.example.skilllinkbackend.config.responses.DataResponse;
+import com.example.skilllinkbackend.features.auth.dto.RenewPasswordRequestDTO;
+import com.example.skilllinkbackend.features.auth.service.password.IPasswordService;
 import com.example.skilllinkbackend.features.usuario.dto.*;
 import com.example.skilllinkbackend.features.usuario.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,9 +32,11 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final IPasswordService passwordService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, IPasswordService passwordService) {
         this.userService = userService;
+        this.passwordService = passwordService;
     }
 
     @Operation(
@@ -77,7 +81,7 @@ public class UserController {
     @PostMapping("register")
     public ResponseEntity<DataResponse<RegisteredUserResponseDTO>> createUser(
             @RequestBody @Valid UserRegisterRequestDTO userDto) throws MessagingException {
-        RegisteredUserResponseDTO registeredUserResponseDTO =  userService.createUser(userDto);
+        RegisteredUserResponseDTO registeredUserResponseDTO = userService.createUser(userDto);
         //ApiResponse response = new ApiResponse("Usuario registrado existosamente", HttpStatus.CREATED.value());
         DataResponse<RegisteredUserResponseDTO> response = new DataResponse(
                 "Usuario registrado, por favor verifique su registro, revise su correo",
@@ -95,14 +99,14 @@ public class UserController {
             }
     )
     @PostMapping("register/verify-user")
-    public ResponseEntity<String> verifyUserRegister(@RequestBody VerifyUserRequestDTO verifyUserRequestDTO){
+    public ResponseEntity<String> verifyUserRegister(@RequestBody VerifyUserRequestDTO verifyUserRequestDTO) {
         userService.verifyUser(verifyUserRequestDTO);
         return ResponseEntity.ok("Cuenta verificada con éxito");
     }
 
     @Operation(
             summary = "Reenviar el código de verificación",
-            description = "Reenvía el código de verificación a un correo",
+            description = "Reenvía el código de verificación a un correo, el usuario todavía no verifica su registro",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Código enviado"),
                     @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
@@ -163,5 +167,33 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody @Valid UserUpdateDTO userDto) {
         return userService.updateUser(id, userDto);
+    }
+
+    @Operation(
+            summary = "Solicitar la renovación de contraseña, solo con correo",
+            description = "El usuario solo recuerda su correo y necesita generar otra contraseña, el usuario previamente ya se encuentra registrado",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Correo enviado con la url para renovar la contraseña"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+            }
+    )
+    @PostMapping("request-password-renewal")
+    public ResponseEntity<ApiResponseSimple> requestPasswordRenewal(@RequestParam String email) throws MessagingException {
+        passwordService.requestPasswordRenewal(email);
+        return ResponseEntity.ok(new ApiResponseSimple("Correo enviado", HttpStatus.OK.value()));
+    }
+
+    @Operation(
+            summary = "Renovar contraseña",
+            description = "El cliente indica el token y la nueva contraseña para su renovación, el usuario previamente ya se encuentra registrado",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Constraseña renovada"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+            }
+    )
+    @PostMapping("renew-password")
+    public ResponseEntity<ApiResponseSimple> renewPassword(@RequestBody @Valid RenewPasswordRequestDTO dto) {
+        passwordService.renewPassword(dto);
+        return ResponseEntity.ok(new ApiResponseSimple("Contraseña renovada con éxito", HttpStatus.OK.value()));
     }
 }
