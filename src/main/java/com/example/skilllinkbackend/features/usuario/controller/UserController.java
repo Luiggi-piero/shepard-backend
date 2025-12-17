@@ -2,6 +2,7 @@ package com.example.skilllinkbackend.features.usuario.controller;
 
 import com.example.skilllinkbackend.config.responses.ApiResponseSimple;
 import com.example.skilllinkbackend.config.responses.DataResponse;
+import com.example.skilllinkbackend.features.auth.dto.ChangePasswordRequestDTO;
 import com.example.skilllinkbackend.features.auth.dto.RenewPasswordRequestDTO;
 import com.example.skilllinkbackend.features.auth.service.password.IPasswordService;
 import com.example.skilllinkbackend.features.usuario.dto.*;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -195,5 +197,24 @@ public class UserController {
     public ResponseEntity<ApiResponseSimple> renewPassword(@RequestBody @Valid RenewPasswordRequestDTO dto) {
         passwordService.renewPassword(dto);
         return ResponseEntity.ok(new ApiResponseSimple("Contraseña renovada con éxito", HttpStatus.OK.value()));
+    }
+
+    @Operation(
+            summary = "Cambiar contraseña",
+            description = "Ocurre el cambio de contraseña, el usuario se encuentra logueado.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Constraseña cambiada"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Credenciales inválias", content = @Content)
+            }
+    )
+    @SecurityRequirement(name = "bearer-key")
+    @PostMapping("change-password")
+    public ResponseEntity<ApiResponseSimple> changePassword(
+            @RequestBody @Valid ChangePasswordRequestDTO dto,
+            Principal principal
+    ) {
+        passwordService.changePassword(principal.getName(), dto);
+        return ResponseEntity.ok(new ApiResponseSimple("Contraseña cambiada con éxito", HttpStatus.OK.value()));
     }
 }
