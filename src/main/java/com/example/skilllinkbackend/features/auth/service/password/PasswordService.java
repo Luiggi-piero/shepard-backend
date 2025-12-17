@@ -2,6 +2,7 @@ package com.example.skilllinkbackend.features.auth.service.password;
 
 import com.example.skilllinkbackend.config.exceptions.BadRequestException;
 import com.example.skilllinkbackend.config.exceptions.NotFoundException;
+import com.example.skilllinkbackend.features.auth.dto.ChangePasswordRequestDTO;
 import com.example.skilllinkbackend.features.auth.dto.RenewPasswordRequestDTO;
 import com.example.skilllinkbackend.features.auth.validation.password.IPasswordValidationService;
 import com.example.skilllinkbackend.features.usuario.model.User;
@@ -12,6 +13,7 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class PasswordService implements IPasswordService {
     private final EmailService emailService;
     private final IUserRepository userRepository;
     private final IPasswordValidationService passwordValidationService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${frontend.reset-password.url}")
     private String resetPasswordBaseUrl;
@@ -74,6 +77,25 @@ public class PasswordService implements IPasswordService {
 
         user.setPassword(dto.newPassword().toCharArray());
 
+        userRepository.save(user);
+    }
+
+    // - Cambio de contrasenia
+    // - El usuario esta logueado
+    @Transactional
+    @Override
+    public void changePassword(String email, ChangePasswordRequestDTO dto) {
+
+        passwordValidationService.validatePassword(dto.newPassword());
+
+        User user = Optional.ofNullable((User) userRepository.findByEmail(email))
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword())) {
+            throw new BadRequestException("La contraseña actual no coincide con nuestra BD");
+        }
+
+        user.setPassword(dto.newPassword().toCharArray());
         userRepository.save(user);
     }
 }
